@@ -1,0 +1,13 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url('./img/background/desert-5385998_1920.png');
+    background-position: center;
+}
+
+canvas{
+   background: black;
+      display: block;
+      margin: 0 auto;
+}
