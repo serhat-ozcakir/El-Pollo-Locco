@@ -1,27 +1,23 @@
 class World {
 character = new Character();
 enemies = level1.enemies;
-// Canvas ve çizim bağlamı için değişkenler hazırlanır
 canvas;
 ctx;
 keyboard;
 camera_x = 0;
-statusBar = new StatusBar();
+healthBar = new HealthStatusBar();
+coinStatusBar = new CoinStatusBar();
+bottleStatusBar = new BottleStatusBar();
 throwableObjects = [];
-// Bulutlar listesi (şimdilik 1 tane bulut)
 clouds= level1.clouds
- // Arka plan resimleri listesi
 backgroundObjects = level1.backgroundObjects;
-// level class inda bütün variable ulasmak icin
 level = level1;
+throwCoolDown = false;
 
 constructor(canvas,keyboard){
-    // Canvas’ın 2D çizim motoru alınır
     this.ctx = canvas.getContext("2d");
-     // Canvas referansı world içine kaydedilir
     this.canvas = canvas;
     this.keyboard = keyboard;
-     // Oyunun çizim döngüsü başlatılır
     this.draw();
     this.setWorld();
     this.run();
@@ -36,22 +32,52 @@ run(){
     setInterval(() => {
         this.checkCollision();
         this.checkThrowObjects();
-    }, 200);
+         this.checkCoinCollision();
+         this.checkBottleCollision();
+    }, 50);
 }
 
 checkThrowObjects(){
-    if(this.keyboard.D){
-        let bottle = new ThrowableObject(this.character.x +50, this.character.y +70);
-        this.throwableObjects.push(bottle)
+    if(this.keyboard.D && this.bottleStatusBar.bottle > 0 && !this.throwCooldown){
+        this.throwCooldown = true; 
+        let bottle = new ThrowableObject(this.character.x + 50, this.character.y + 70);
+        this.throwableObjects.push(bottle);
+         bottle.throw();
+        this.bottleStatusBar.bottle--;
+        const percentage = (this.bottleStatusBar.bottle / this.bottleStatusBar.maxBottle) * 100;
+        this.bottleStatusBar.setPercentage(Math.min(percentage, 100));
+        setTimeout(() => this.throwCooldown = false, 500); 
     }
 }
+
 
 checkCollision() {
     this.level.enemies.forEach(enemy => {
         if (this.character.isColliding(enemy) && !this.character.isHurt()) {
             this.character.hit();
-            this.statusBar.setPercentage(this.character.energy)
+            this.healthBar.setPercentage(this.character.energy)
              console.log('CARPISMA OLDU VE ENERGY:', this.character.energy);
+        }
+    });
+}
+
+checkCoinCollision(){
+    this.level.coins.forEach((coin, index)=> {
+        if (this.character.isColliding(coin)){
+            console.log('Coin toplandı:', index);
+            this.level.coins.splice(index, 1);
+            this.coinStatusBar.increase(1); // veya 1
+        }
+    });
+}
+
+
+checkBottleCollision(){
+    this.level.bottles.forEach((bottle, index)=> {
+        if (this.character.isColliding(bottle)){
+            console.log('Coin toplandı:', index);
+            this.level.bottles.splice(index, 1);
+            this.bottleStatusBar.increase(1);
         }
     });
 }
@@ -74,10 +100,14 @@ draw() {
     this.throwableObjects.forEach(item => {
      this.addToMap(item)
     });
+    this.level.coins.forEach(coin=> this.addToMap(coin));
+    this.level.bottles.forEach(bottle=> this.addToMap(bottle));
     this.ctx.restore(); // translate'i geri al
 
     // UI / Status bar (kamera ile değil, sabit ekranda)
-    this.addToMap(this.statusBar);
+    this.addToMap(this.healthBar);
+    this.addToMap(this.coinStatusBar);
+    this.addToMap(this.bottleStatusBar);
     // ------------------------------
 
     this.checkCollision();
