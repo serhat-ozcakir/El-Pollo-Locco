@@ -11,3 +11,36 @@ canvas{
       display: block;
       margin: 0 auto;
 }
+
+.game-container{
+    width:720px;
+    height:480px;
+    position: relative;
+}
+
+.game-over-lost{
+    display:none;
+    position:absolute; 
+    top:0; left:0; 
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.7);
+    text-align:center;
+    z-index:100;
+}
+
+.game-over-win{
+    display:none;
+    position:absolute; 
+    top:0; left:0; 
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,1);
+    text-align:center;
+    z-index:100;
+}
+
+.image{
+    max-width: 500px;
+    width: 100%;
+}
