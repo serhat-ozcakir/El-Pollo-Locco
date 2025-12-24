@@ -6,6 +6,19 @@ body{
     background-position: center;
 }
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  scroll-behavior: smooth !important;
+  display: flex;
+  justify-content: center;
+    align-items: center;
+}
+
 .game-container {
     position: relative;
     width: 720px;
@@ -18,6 +31,30 @@ canvas {
     background-image: url("image/9_intro_outro_screens/start/startscreen_1.png");
     background-size: cover;
     background-position: center;
+      height: 100%;
+    object-fit: contain;
+}
+
+#fullscreen-btn {
+    z-index: 20;
+}
+
+.btn-fullscreen{
+    background-color: transparent;
+    border: none;
+    font-size: 25px !important;
+    color: white !important;
+}
+
+.button-group{
+    display: flex;
+    gap: 10px;  
+}
+
+.menu-btn {
+    width: 160px;        /* Sabit genişlik */
+    font-size: 18px;     /* Daha oyun hissi */
+    padding: 10px 0;
 }
 
 
@@ -32,6 +69,7 @@ canvas {
     justify-content: center; 
     align-items: center;     
     background-color: rgba(0,0,0,0.8); 
+     z-index: 10;
 }
 
 
@@ -43,4 +81,22 @@ canvas {
 
 #win-screen button, #gameover-screen button, #start-screen button {
     margin-top: 15px;
+}
+
+.modal-body{
+    overflow-y: scroll;
+    max-height: 400px;
+}
+
+
+@media screen and (max-width: 548px) {
+    .menu-btn {
+        width: 125px;
+    }    
+}
+
+@media screen and (max-width: 350px) {
+    .menu-btn {
+        width: 111px;
+    }    
 }
