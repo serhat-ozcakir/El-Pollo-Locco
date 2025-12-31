@@ -1,16 +1,41 @@
 let canvas;
 let world;
-let keyboard = new Keyboard();
+let keyboard;
 let gameStarted = false;
+let soundManager;
 
 function init() {
     canvas = document.getElementById('canvas');
+    soundManager = new SoundsManager();
+    updateMuteIcon();
     showStartScreen();
 }
 
-function toggleFullScreen() {
-    let element = document.documentElement;;
+window.addEventListener('DOMContentLoaded', () => {
+    keyboard = new Keyboard();
+});
 
+function toggleMute() {
+    soundManager.toggleMute();
+    updateMuteIcon();
+}
+
+function updateMuteIcon() {
+    const icon = document.getElementById('mute-icon');
+    if (soundManager.isMuted) {
+        icon.classList.remove('bi-volume-up');
+        icon.classList.add('bi-volume-mute');
+    } else {
+        icon.classList.remove('bi-volume-mute');
+        icon.classList.add('bi-volume-up');
+    }
+}
+
+
+
+function toggleFullScreen() {
+   // let element = document.documentElement;
+    let element = document.getElementById('game-wrapper');
     if (!document.fullscreenElement) {
         if (element.requestFullscreen) {
             element.requestFullscreen();
@@ -30,16 +55,34 @@ function toggleFullScreen() {
     }
 }
 
+document.addEventListener('fullscreenchange', updateFullscreenIcon);
+document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+document.addEventListener('msfullscreenchange', updateFullscreenIcon);
+
+function updateFullscreenIcon() {
+    const fullscreenBtn = document.getElementById('fullscreen-icon');
+    if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+        fullscreenBtn.classList.remove('bi-fullscreen');
+        fullscreenBtn.classList.add('bi-fullscreen-exit');
+    } else {
+        fullscreenBtn.classList.remove('bi-fullscreen-exit');
+        fullscreenBtn.classList.add('bi-fullscreen');
+    }
+}   
+
 
 function startGame() {
     if (gameStarted) return;
     hideAllScreens();
-    world = new World(canvas, keyboard);
+    world = new World(canvas, keyboard,soundManager);
     gameStarted = true;
+    soundManager.play('game_start');
+    soundManager.play('background_music');
 }
 
 
 function restartGame() {
+    soundManager.stopAll();
     hideAllScreens();
     if (world) {
         world.stopGameLoop();
@@ -49,6 +92,23 @@ function restartGame() {
     level1.reset();
     gameStarted = false;
     startGame();
+}
+
+function mainGame() {
+    soundManager.stopAll();
+    if (world) {
+        world.stopGameLoop();
+        world = null;
+    }
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    gameStarted = false;
+    keyboard.reset();
+    hideAllScreens();
+    showStartScreen();
+    if (level1 && typeof level1.reset === "function") {
+        level1.reset();
+    }
 }
 
 function showStartScreen() {
@@ -63,20 +123,3 @@ function hideAllScreens() {
     document.getElementById('gameover-screen').classList.add('d-none');
 }
 
-window.addEventListener("keydown", (e) => {
-    if(e.keyCode == 39) keyboard.RIGHT = true;
-    if(e.keyCode == 37) keyboard.LEFT = true;
-    if(e.keyCode == 40) keyboard.DOWN = true;
-    if(e.keyCode == 38) keyboard.UP = true;
-    if(e.keyCode == 32) keyboard.SPACE = true;
-    if(e.keyCode == 68) keyboard.D = true;
-});
-
-window.addEventListener("keyup", (e) => {
-    if(e.keyCode == 39) keyboard.RIGHT = false;
-    if(e.keyCode == 37) keyboard.LEFT = false;
-    if(e.keyCode == 40) keyboard.DOWN = false;
-    if(e.keyCode == 38) keyboard.UP = false;
-    if(e.keyCode == 32) keyboard.SPACE = false;
-    if(e.keyCode == 68) keyboard.D = false;
-});
