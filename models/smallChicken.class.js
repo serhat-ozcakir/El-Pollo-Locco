@@ -1,7 +1,14 @@
+/**
+ * Class: smallChicken
+ * 
+ * Represents a small enemy chicken in the game.
+ * Extends MovableObject with walking and death animations.
+ */
+
 class smallChicken extends MovableObject {
-    height = 35;
+    height = 60;
     width = 40; 
-    y = 430;
+    y = 351;
     energy = 1;
     isDead = false;
 
@@ -15,7 +22,7 @@ class smallChicken extends MovableObject {
         'image/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ];
 
-    offset = { top: 10, bottom: 5, left: 10, right: 10 };
+    offset = { top: 5, bottom: 5, left: 10, right: 10 };
 
     constructor(x) {
         super();
@@ -26,33 +33,39 @@ class smallChicken extends MovableObject {
         this.speed = 0.15 + Math.random() * 0.3;
         this.animate();
     }
+
+    /**
+     * Starts walking movement and animation intervals.
+     */
     animate(){
         // Hareket interval'i
         this.movementInterval = setInterval(() => {
             if(!this.isDead) this.moveLeft();
         }, 1000 / 60);
 
-        // Animasyon interval'i
         this.animationInterval = setInterval(() => {
             if(!this.isDead) this.playAnimation(this.IMAGES_WALKING);
         }, 300);
     }
+
+    /**
+     * Kills the small chicken.
+     * Stops movement, plays death animation and sound,
+     * and removes it from the world after a short delay.
+     */
     die() {
+        if (this.isDead) return;
         this.isDead = true;
         this.speed = 0;
         clearInterval(this.movementInterval);
         clearInterval(this.animationInterval);
-        this.playAnimation(this.IMAGES_DEAD);
-
-        // 1 saniye sonra world.enemies array’den kaldır
+        this.currentImage = 0;
+        this.loadImage(this.IMAGES_DEAD[0]);
+        this.world.soundManager.play('chicken_dead');
         setTimeout(() => {
-            if(this.world) { // world tanımlı mı kontrol et
-                const index = this.world.level.enemies.indexOf(this);
-                if(index > -1) {
-                    this.world.level.enemies.splice(index, 1);
-                }
-            }
-        }, 100);
+            const index = this.world.level.enemies.indexOf(this);
+            if(index > -1) this.world.level.enemies.splice(index, 1);
+        }, 1000);
     }
 
     }
