@@ -1,8 +1,33 @@
+/* baloo-2-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/baloo-2-v23-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* baloo-2-700 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/baloo-2-v23-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* luckiest-guy-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Luckiest Guy';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/luckiest-guy-v25-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
 body{
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: url('image/5_background/layers/desert-5385998_1920.png');
+    background-image: url('image/5_background/layers/desert.png');
     background-position: center;
 }
 
@@ -16,27 +41,125 @@ body {
   scroll-behavior: smooth !important;
   display: flex;
   justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.title{
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 3rem;
+    color: #2b2a26;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.modal-title{
+    font-family: 'Baloo 2';
+    font-size: 2rem;
+    color: #2b2a26;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.modal-body-title{
+    font-family: 'Baloo 2';
+    font-size: 1.5rem;
+    color: #2b2a26;
+    font-weight: 400;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.list-group-item{
+    font-family: 'Baloo 2';
+    font-size: 1.1rem;
+    color: #2b2a26;
+    font-weight: 400;
+}
+
+.impressum-body{
+ background-image: url('image/5_background/layers/desert-5385998_1920.png');
+    background-position: center;
+    background-size: cover;
+    margin: 0;
+    overflow-y: auto;
+    font-family: 'Baloo 2', cursive;
+}
+
+.main {
+    width: 100%;
+    min-height: 100svh;
+    padding: 20px 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    
+}
+
+.container {
+    max-width: 800px; 
+    width: 100%; 
+}
+
+#game-container {
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
 
-.game-container {
-    position: relative;
-    width: 720px;
-    max-width: 100%;
-    margin: auto;
+
+#rotate-warning {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: black;
+    color: white;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 24px;
 }
+
 
 canvas {
     width: 100%;
+    max-width: 720px;
+    height: auto;
     background-image: url("image/9_intro_outro_screens/start/startscreen_1.png");
     background-size: cover;
     background-position: center;
-      height: 100%;
+    height: auto;
     object-fit: contain;
 }
 
 #fullscreen-btn {
-    z-index: 20;
+     position: absolute;
+    top: 6px;
+    right: 10px;
+    z-index: 50;
+}
+
+#fullscreen-icon{
+    font-size: 17px;
+}
+
+.mobil-icon-btn{
+
+    font-size: 20px !important;
+    color: #dfd1c8 !important;
+    font-size: 25px !important;
+}
+
+.mobil-icon{
+    font-size: 25px;
+}
+
+#mute-btn {
+    position: absolute;
+    top: 10px;
+    right: 55px; 
+    z-index: 50;
 }
 
 .btn-fullscreen{
@@ -48,13 +171,19 @@ canvas {
 
 .button-group{
     display: flex;
+    justify-content: center;
     gap: 10px;  
+    width: 100%;
 }
 
 .menu-btn {
-    width: 160px;        /* Sabit genişlik */
-    font-size: 18px;     /* Daha oyun hissi */
+    width: 160px;     
+    font-size: 18px;     
     padding: 10px 0;
+}
+
+#start-screen {
+  height: 100%;
 }
 
 
@@ -75,7 +204,7 @@ canvas {
 
 #win-screen img, #gameover-screen img, #start-screen img {
     max-width: 80%;   
-    max-height: 70%; 
+    max-height: 50%; 
 }
 
 
@@ -85,18 +214,96 @@ canvas {
 
 .modal-body{
     overflow-y: scroll;
-    max-height: 400px;
+    max-height: 385px;
+}
+
+
+#mobile-controls {
+    width: 100%;
+    padding: 0 20px;
+    display: none;
+    justify-content: space-between;
+}
+
+#mobile-controls .mobile-btn {
+    font-size: 26px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.35);
+    color: white;
+}
+
+
+@media screen and (max-width: 900px) and (orientation: portrait) {
+    #game-container {
+        display: none;
+    }
+
+    #rotate-warning {
+        display: flex;
+    }
+}
+
+@media screen and (max-width: 900px) and (orientation: landscape) {
+    #game-container {
+        display: flex;
+    }
+     #mobile-controls {
+        display: flex !important;
+        position: absolute;
+        bottom: 0px;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 12px;
+        z-index: 30;
+    }
+
+    #rotate-warning {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .main {
+        padding-top: 15px;
+    }
 }
 
 
 @media screen and (max-width: 548px) {
     .menu-btn {
-        width: 125px;
-    }    
+    max-width: 100px;
+    width: 100%;
+    font-size: 14px !important;
+    } 
+    #fullscreen-btn{
+        top: -3px;
+    } 
+    #mute-btn{
+        top: 0px;
+    }  
+    #win-screen img, #gameover-screen img, #start-screen img {
+    max-width: 60%;   
+    max-height: 40%; 
+    }
+    #win-screen button, #gameover-screen button, #start-screen button {
+    margin-top: 0px;
+    }
+    .button-group{
+        padding-bottom: 25px;
+    }
 }
 
 @media screen and (max-width: 350px) {
     .menu-btn {
         width: 111px;
+    }  
+        #fullscreen-btn{
+        top: -12px;
+    } 
+    #mute-btn{
+        top: -8px;
     }    
 }
