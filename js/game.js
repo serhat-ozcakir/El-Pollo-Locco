@@ -72,6 +72,7 @@ function updateFullscreenIcon() {
 
 
 function startGame() {
+     muteSoundButtonDisplay();
     if (gameStarted) return;
     hideAllScreens();
     world = new World(canvas, keyboard,soundManager);
@@ -82,6 +83,7 @@ function startGame() {
 
 
 function restartGame() {
+   muteSoundButtonDisplay()
     soundManager.stopAll();
     hideAllScreens();
     if (world) {
@@ -95,6 +97,7 @@ function restartGame() {
 }
 
 function mainGame() {
+    muteSoundButtonDisplayHome();
     soundManager.stopAll();
     if (world) {
         world.stopGameLoop();
@@ -109,6 +112,18 @@ function mainGame() {
     if (level1 && typeof level1.reset === "function") {
         level1.reset();
     }
+}
+
+function muteSoundButtonDisplay() {
+    document.getElementById('mute-icon').style.display = 'block';
+    document.getElementById('fullscreen-icon').style.display = 'block';
+
+}
+
+function muteSoundButtonDisplayHome() {
+    document.getElementById('mute-icon').style.display = 'none';
+    document.getElementById('fullscreen-icon').style.display = 'none';
+
 }
 
 function showStartScreen() {
