@@ -4,7 +4,7 @@
   font-family: 'Baloo 2';
   font-style: normal;
   font-weight: 400;
-  src: url('../fonts/baloo-2-v23-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('fonts/baloo-2-v23-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 /* baloo-2-700 - latin */
 @font-face {
@@ -12,7 +12,7 @@
   font-family: 'Baloo 2';
   font-style: normal;
   font-weight: 700;
-  src: url('../fonts/baloo-2-v23-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('fonts/baloo-2-v23-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 /* luckiest-guy-regular - latin */
 @font-face {
@@ -20,16 +20,22 @@
   font-family: 'Luckiest Guy';
   font-style: normal;
   font-weight: 400;
-  src: url('../fonts/luckiest-guy-v25-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('fonts/luckiest-guy-v25-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
-body{
+.main-container{
+    width: 100vw; 
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     background-image: url('image/5_background/layers/desert.png');
+    background-repeat: no-repeat;
     background-position: center;
+    background-size: cover;
 }
+
 
 html,
 body {
@@ -38,7 +44,6 @@ body {
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
-  scroll-behavior: smooth !important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -109,8 +114,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 60px); /* başlık + mobil butonlar için alan */
-    max-height: 100vh;
+  
 }
 
 #rotate-warning {
@@ -149,11 +153,6 @@ canvas {
     to {opacity: 100%; width: 25%;}
 }
 
-@keyframes fade-in-mobil {
-   from {opacity: 0%; width: 0%;}
-    to {opacity: 100%; width: 100%;}
-}
-
 
 #fullscreen-btn {
      position: absolute;
@@ -164,6 +163,7 @@ canvas {
 
 #fullscreen-icon{
     font-size: 17px;
+    display: none;
 }
 
 .mobil-icon-btn{
@@ -197,9 +197,13 @@ canvas {
 
 #mute-btn {
     position: absolute;
-    top: 10px;
+    top: 0px;
     right: 55px; 
     z-index: 50;
+}
+
+#mute-icon{
+    display: none;
 }
 
 .btn-fullscreen{
@@ -220,7 +224,7 @@ canvas {
     width: 160px;     
     font-size: 18px;     
     padding: 10px 0;
-    animation: fade-in 1s ease-out 2s both;
+    animation: fade-in 1s ease-out 1.5s both;
 }
 
 #start-screen {

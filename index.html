@@ -9,7 +9,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="icon" type="image/png" href="./image/2_character_pepe/El-Pollo-Loco-blanco-logo-300x300.jpg">
-
   <script src="./models/drawable-object.class.js"></script>
   <script src="./models/movable-object.class.js"></script>
   <script src="./models/status-bar.class.js"></script>
@@ -33,14 +32,11 @@
   <script src="./models/world.class.js"></script>
   <script src="./js/game.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-
 </head>
 
 <body onload="init()">
-
-  <h1 class="text-center my-3 title">El Pollo Loco</h1>
-
+  <div class="main-container">
+  <h1 class="text-center my-3 title">El Pollo Locco</h1>
   <div id="rotate-warning">
     <div>
       <p style="font-size:32px;">🔄</p>
@@ -85,7 +81,10 @@
         <button class="btn  btn-outline-light menu-btn" onclick="startGame()">Start Game</button>
         <button class="btn btn-outline-light menu-btn" data-bs-toggle="modal" data-bs-target="#howToPlayModal">
           How to Play</button>
-        <button class="btn btn-outline-light menu-btn" onclick="window.location.href='impressum.html'">
+      <!--  <button class="btn btn-outline-light menu-btn" onclick="window.location.href='Impressum.html'">
+          Impressum
+        </button> -->
+        <button class="btn btn-outline-light menu-btn" data-bs-toggle="modal" data-bs-target="#impressum">
           Impressum
         </button>
       </div>
@@ -163,9 +162,44 @@
         </div>
       </div>
     </div>
+    <!-- IMPRESSUM -->
+    <div class="modal fade" id="impressum" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+          <div class="modal-header">
+            <h5 class="modal-title">Impressum</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+                    <p><strong>Information according to § 5 TMG</strong></p>
+                    <p>Serhat Özcakir<br>
+                        Auf der Brede<br>
+                        42477 Radevormwald<br>
+                        Deutschland</p>
+
+                    <p><strong>Kontakt:</strong></p>
+                    <p>Telefon: +49 176 41190354<br>
+                        E-Mail: <a class="text-black"
+                            href="mailto:serhatozcakir35@gmail.com">serhatozcakir35@gmail.com</a></p>
+
+                    <p><strong>Haftungsausschluss (Disclaimer):</strong></p>
+                    <p>This website is a student project created as part of a web development training program.
+                        The project El Pollo Locco is for educational purposes only and is not a commercial product.</p>
+                    <br>
+                    <p><strong>Liability for Content:</strong></p>
+                    <p>The contents of this website were created with great care.
+                        However, no guarantee is given for the accuracy, completeness, or timeliness of the content.</p>
+                            <strong>Copyright:</strong>
+                    </p>
+                    <p>All graphics, sounds, images, and code used in this project are for educational purposes only.
+                        No commercial use is intended.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
-
+</div>
 </body>
 
 </html>
