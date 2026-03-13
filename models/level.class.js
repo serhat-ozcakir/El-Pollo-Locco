@@ -1,3 +1,10 @@
+/**
+ * Class: Level
+ * 
+ * Represents a game level, containing enemies, clouds, background objects,
+ * coins, and bottles. Also defines the end point of the level.
+ */
+
 class Level {
     enemies;
     clouds;
@@ -6,6 +13,15 @@ class Level {
     bottles;
     level_end_x = 2200;
 
+    /**
+     * Constructor for the Level class.
+     * @param {Array<Enemy>} enemies - Initial enemies in the level.
+     * @param {Array<Clouds>} clouds - Initial clouds in the level.
+     * @param {Array<BackgroundObject>} backgroundObjects - Background layers for the level.
+     * @param {Array<Coins>} coins - Coins in the level.
+     * @param {Array<Bottles>} bottles - Bottles in the level.
+     */
+
     constructor(enemies, clouds, backgroundObjects, coins, bottles){
         this.enemies = enemies;
         this.clouds = clouds;
@@ -13,8 +29,11 @@ class Level {
         this.coins = coins;
         this.bottles = bottles;
     }
-
-reset() {
+    /**
+     * Resets the level to its default state.
+     * Reinitializes enemies, clouds, background objects, coins, and bottles.
+     */
+    reset() {
     this.enemies = [
         new Chicken(350),
         new smallChicken(600),

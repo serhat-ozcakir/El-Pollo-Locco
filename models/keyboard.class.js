@@ -1,3 +1,10 @@
+/**
+ * Class: Keyboard
+ * 
+ * Handles keyboard and mobile button input for the game.
+ * Tracks which keys or buttons are currently pressed.
+ */
+
 class Keyboard {
     constructor() {
         this.RIGHT = false;
@@ -10,6 +17,9 @@ class Keyboard {
         this.bindMobileBtnPressEvents();
     }
 
+    /**
+     * Binds keyboard events (keydown and keyup) to update key states.
+     */
     bindKeypressEvents() {
         window.addEventListener("keydown", (e) => {
             if (e.keyCode == 39) this.RIGHT = true;
@@ -30,40 +40,71 @@ class Keyboard {
         });
     }
 
-       bindMobileBtnPressEvents() {
-        const right = document.getElementById('btn-right');
-        const left = document.getElementById('btn-left');
-        const up = document.getElementById('btn-up');
-        const throwBtn = document.getElementById('btn-up-right');
+    /**
+     * Binds touch events for mobile buttons to update key states.
+     * Expects buttons with IDs: 'btn-right', 'btn-left', 'btn-up', 'btn-up-right'.
+     */
+bindMobileBtnPressEvents() {
+    const right = document.getElementById('btn-right');
+    const left = document.getElementById('btn-left');
+    const up = document.getElementById('btn-up');
+    const throwBtn = document.getElementById('btn-up-right');
 
-        if (!right || !left || !up || !throwBtn) return;
+    if (!right || !left || !up || !throwBtn) return;
 
-        right.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.RIGHT = true;
-        });
-        right.addEventListener('touchend', () => this.RIGHT = false);
+    const press = (key) => {
+        this[key] = true;
+    };
 
-        left.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.LEFT = true;
-        });
-        left.addEventListener('touchend', () => this.LEFT = false);
+    const release = (key) => {
+        this[key] = false;
+    };
 
-        up.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.UP = true;
-        });
-        up.addEventListener('touchend', () => this.UP = false);
+    // RIGHT
+    right.addEventListener('touchstart', (e) => {
+        if (e.cancelable) e.preventDefault();
+        press('RIGHT');
+    });
+    right.addEventListener('touchend', () => release('RIGHT'));
+    right.addEventListener('mousedown', () => press('RIGHT'));
+    right.addEventListener('mouseup', () => release('RIGHT'));
+    right.addEventListener('mouseleave', () => release('RIGHT'));
 
-        throwBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.D = true;
-        });
-        throwBtn.addEventListener('touchend', () => this.D = false);
-    }
+    // LEFT
+    left.addEventListener('touchstart', (e) => {
+        if (e.cancelable) e.preventDefault();
+        press('LEFT');
+    });
+    left.addEventListener('touchend', () => release('LEFT'));
+    left.addEventListener('mousedown', () => press('LEFT'));
+    left.addEventListener('mouseup', () => release('LEFT'));
+    left.addEventListener('mouseleave', () => release('LEFT'));
+
+    // UP
+    up.addEventListener('touchstart', (e) => {
+        if (e.cancelable) e.preventDefault();
+        press('UP');
+    });
+    up.addEventListener('touchend', () => release('UP'));
+    up.addEventListener('mousedown', () => press('UP'));
+    up.addEventListener('mouseup', () => release('UP'));
+    up.addEventListener('mouseleave', () => release('UP'));
+
+    // THROW (D)
+    throwBtn.addEventListener('touchstart', (e) => {
+        if (e.cancelable) e.preventDefault();
+        press('D');
+    });
+    throwBtn.addEventListener('touchend', () => release('D'));
+    throwBtn.addEventListener('mousedown', () => press('D'));
+    throwBtn.addEventListener('mouseup', () => release('D'));
+    throwBtn.addEventListener('mouseleave', () => release('D'));
+}
+
     
-
+    /**
+     * Resets all key states to false.
+     */
     reset() {
         this.RIGHT = false;
         this.LEFT = false;

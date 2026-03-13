@@ -73,9 +73,7 @@ class Character extends MovableObject {
     world;
     speed = 5;
     energy = 100;
-
     offset = { top: 80, bottom: 20, left: 15, right: 15 };
-
     animateIntervalId = null;
     idleTimeoutId = null;
     isIdle = false;

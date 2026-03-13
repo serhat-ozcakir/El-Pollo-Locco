@@ -1,3 +1,7 @@
+/**
+ * Represents the endboss health bar.
+ */
+
 class EndbossStatusBar extends StatusBar {
 
     IMAGES = [
@@ -10,7 +14,7 @@ class EndbossStatusBar extends StatusBar {
     ];
     constructor() {
         super();
-        this.y = 10;
+        this.y = 50;
         this.x = 500;
         this.loadImages(this.IMAGES);
         this.setPercentage(100);

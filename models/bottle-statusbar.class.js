@@ -1,3 +1,7 @@
+/**
+ * Represents the bottle count status bar.
+ */
+
 class BottleStatusBar extends StatusBar {
     IMAGES = [
         'image/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
@@ -17,6 +21,11 @@ class BottleStatusBar extends StatusBar {
         this.loadImages(this.IMAGES);
         this.setPercentage(0);
     }
+
+    /**
+     * Increases the bottle count.
+     * @param {number} amount
+     */
      increase(amount = 1){
         this.bottle += amount;
         const percentage = (this.bottle / this.maxBottle) * 100;

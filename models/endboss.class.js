@@ -1,3 +1,8 @@
+/**
+ * Represents the final boss enemy in the game.
+ * Inherits from Enemy.
+ */
+
 class Endboss extends MovableObject {
     height = 400;
     width = 220;
@@ -5,9 +10,9 @@ class Endboss extends MovableObject {
     energy = 100;
     maxEnergy = 100;
     isDeadAnimationPlayed = false;
-    speed = 22;
+    speed = 47;
     alertTime = 0; 
-    attackDistance = 275; 
+    attackDistance = 40; 
 
     IMAGES_WALKING = [
         'image/4_enemie_boss_chicken/1_walk/G1.png',
@@ -63,7 +68,16 @@ class Endboss extends MovableObject {
         this.x = 1800;
     }
 
-animate() {
+    /**
+     * Animates the endboss based on its current state.
+     * - DEAD: plays death animation once
+     * - HURT: plays hurt animation
+     * - IDLE: plays alert animation
+     * - WALKING: moves towards the character and plays walking animation
+     * - ATTACK: plays attack animation if within attack distance
+     */
+
+    animate() {
     setInterval(() => {
         if(this.isDead()){
             this.state = 'DEAD';
@@ -79,23 +93,29 @@ animate() {
         } else {
             this.state = 'IDLE';
         }
-
         switch(this.state){
-            case 'DEAD':
-                if(!this.isDeadAnimationPlayed){
-                    this.playAnimation(this.IMAGES_DEAD);
-                    this.isDeadAnimationPlayed = true;
-                }
-                break;
+        case 'DEAD':
+            if (!this.isDeadAnimationPlayed) {
+                this.speed = 0;
+                let deathIndex = 0;
+                const deathInterval = setInterval(() => {
+                    this.loadImage(this.IMAGES_DEAD[deathIndex]);
+                    deathIndex++;
+                    if (deathIndex >= this.IMAGES_DEAD.length) {
+                        clearInterval(deathInterval);
+                        this.isDeadAnimationPlayed = true;
+                    }
+                    this.y += 20;
+                }, 400); 
+            }
+            break;
 
             case 'HURT':
                 this.playAnimation(this.IMAGES_HURT);          
                 break;
-
             case 'IDLE':
                 this.playAnimation(this.IMAGES_ALERT);
                 break;
-
             case 'WALKING':
                 this.playAnimation(this.IMAGES_WALKING);
                 if(this.x > this.world.character.x) {
@@ -106,7 +126,6 @@ animate() {
                     this.otherDirection = true;
                 }
                 break;
-
             case 'ATTACK':
                 this.playAnimation(this.IMAGES_ATTACK);
                 break;
@@ -114,22 +133,40 @@ animate() {
     }, 300);
 }
 
+     /**
+     * Reduces endboss energy when hit by a throwable object.
+     * Ensures energy does not drop below 0.
+     */
 
     hit(){
-        this.energy -= 20;
+        this.energy -= 13;
         if(this.energy < 0) this.energy = 0;
         this.lastHit = new Date().getTime();
     }
+
+    /**
+     * Checks if the player character is within 500px distance of the endboss.
+     * @returns {boolean} True if character is near, false otherwise.
+     */
 
     CharacterNear(){
         const distance = Math.abs(this.x - this.world.character.x);
         return distance < 500;
     }
 
+    /**
+     * Determines if the endboss is currently in a hurt state.
+     * @returns {boolean} True if recently hit, false otherwise.
+     */
+
     isHurt(){
         return (new Date().getTime() - this.lastHit) < 500;
     }
 
+    /**
+     * Determines if the endboss is dead (energy <= 0).
+     * @returns {boolean} True if dead, false otherwise.
+     */
     isDead(){
         return this.energy <= 0;
     }

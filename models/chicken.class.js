@@ -30,7 +30,7 @@ class Chicken extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.x = x;
         this.speed = 0.15 + Math.random() * 0.25;
-        this.animate();
+        //this.animate();
     }
 
     /**
@@ -66,5 +66,4 @@ class Chicken extends MovableObject {
             if(index > -1) this.world.level.enemies.splice(index, 1);
         }, 1000);
     }
-
 }

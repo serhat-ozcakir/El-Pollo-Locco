@@ -1,3 +1,7 @@
+/**
+ * Represents the character's health bar UI element.
+ */
+
 class HealthStatusBar extends StatusBar {
     IMAGES = [
         'image/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',

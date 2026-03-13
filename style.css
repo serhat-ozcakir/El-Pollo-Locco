@@ -36,7 +36,6 @@
     background-size: cover;
 }
 
-
 html,
 body {
   height: 100%;
@@ -64,7 +63,6 @@ body {
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
-
 
 .modal-body-title{
     font-family: 'Baloo 2';
@@ -114,7 +112,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-  
 }
 
 #rotate-warning {
@@ -132,7 +129,6 @@ body {
 
 canvas {
     width: 100%;
-   /* max-height: 100%; */
     max-width: 720px;
     height: auto;
     background-image: url("image/9_intro_outro_screens/start/startscreen_1.png");
@@ -153,7 +149,6 @@ canvas {
     from {opacity: 0%; width: 0%;}
     to {opacity: 100%; width: 25%;}
 }
-
 
 #fullscreen-btn {
      position: absolute;
@@ -180,7 +175,7 @@ canvas {
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    transition: transform 0.08s ease, background 0.1s ease;
+    transition: transform 0.08s ease, background 0.1s ease;  
 }
 
 .mobil-icon-btn:active {
@@ -189,11 +184,20 @@ canvas {
 }
 
 #btn-up {
-    background: rgba(46, 204, 113, 0.45); /* jump */
+    background: rgba(46, 204, 113, 0.45); 
+    color: white;
+    border: 1px solid white;
 }
 
 #btn-up-right {
-    background: rgba(231, 76, 60, 0.45); /* throw */
+    background: rgba(231, 76, 60, 0.45); 
+    color: white;
+    border: 1px solid white;
+}
+
+#btn-left, #btn-right{
+    color: white;
+    border: 1px solid white;
 }
 
 #mute-btn {
@@ -206,7 +210,6 @@ canvas {
 #mute-icon{
     display: none;
 }
-
 
 .btn-fullscreen{
     background-color: transparent;
@@ -262,25 +265,39 @@ canvas {
 }
 
 #mobile-controls {
+    position: absolute;
+    bottom: 5%;           
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;      
+    gap: 12px;
+    z-index: 50;
+    justify-content: space-between;
+    width: auto;
+    max-width: 90%;
     width: 100%;
-    padding: 0 20px;
-    display: none;
-    justify-content: space-between;  
+}
+
+#mobile-controls .left-controls,
+#mobile-controls .right-controls {
+    display: flex;
+    gap: 10px;
 }
 
 #mobile-controls .mobile-btn {
-    font-size: 26px;
-    width: 55px;
-    height: 55px;
+ width: 50px;
+    height: 50px;
     border-radius: 50%;
-    border: none;
-    background: rgba(255,255,255,0.35);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.45);
     color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    transition: transform 0.08s ease, background 0.1s ease;
 }
-
-/* ============================= */
-/* FULLSCREEN FIX – SAFE PATCH   */
-/* ============================= */
 
 #game-wrapper:fullscreen {
      width: 100vw !important;
@@ -300,7 +317,6 @@ canvas {
     background-image: none !important;
 }
 
-/* fullscreen buttons */
 #game-wrapper:fullscreen #fullscreen-btn,
 #game-wrapper:fullscreen #mute-btn {
     position: fixed;
@@ -308,12 +324,11 @@ canvas {
     z-index: 999;
 }
 
-/* fullscreen mobile controls */
 #game-wrapper:fullscreen #mobile-controls {
-    position: fixed;
-    bottom: 35px !important;
+    bottom: 5%;
     left: 50%;
     transform: translateX(-50%);
+    position: fixed;
     z-index: 999;
 }
 
@@ -332,12 +347,6 @@ canvas {
 } 
 
 @media screen and (max-width: 1200px) {
-    #mobile-controls {
-       /* bottom: 30px;*/ 
-    }
-    #fullscreen-btn{
-        /*display: none;*/
-    }
     #mute-btn{
         right: 54px;
     }
@@ -346,38 +355,29 @@ canvas {
 @media screen and (max-width: 991px) and (orientation: landscape) {
 
   #mobile-controls {
-    display: flex;
+    display: none;
     position: absolute;
     bottom: 15px;
     left: 50%;
     transform: translateX(-50%);
     gap: 12px;
     z-index: 30;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding: 0px 18px;
   }
 }
 
-@media screen and (min-width: 992px) {
-  #mobile-controls {
-    display: none !important;
-  }
-}
-
-
-
-@media screen and (min-width:991px) {
+@media screen and (min-width:1366px)  and (orientation: landscape){
     #mobile-controls{
-      /*  bottom: 15px !important;*/
+        padding-bottom: 35px !important;
     }
- 
 }
-
 @media screen and (min-width:1000px)  and (orientation: landscape){
-       .container{
+    .container{
         max-width: 700px !important;
     }
     #mobile-controls{
-        padding-bottom: 15px !important;
+        padding-bottom: 25px !important;
     }
 }
 
@@ -385,9 +385,8 @@ canvas {
     .container{
         max-width: 680px !important;
     }
-        #mobile-controls{
+    #mobile-controls{
         bottom: 20px !important;
-       
     }
  
 }
@@ -396,7 +395,6 @@ canvas {
     #game-container {
         display: none;
     }
-
     #rotate-warning {
         display: flex;
     }
@@ -408,12 +406,10 @@ canvas {
         padding: clamp(40px, 8vh, 75px) clamp(20px, 6vw, 45px);
         box-sizing: border-box;
     }
-   
     .modal-body {
-    max-height: 235px !important;  
-    overflow-y: auto;  
+        max-height: 235px !important;  
+        overflow-y: auto;  
   }
-
     #rotate-warning {
         display: none;
     }
@@ -426,8 +422,6 @@ canvas {
     .button-group{
         padding-bottom: 10px;
     }
-
-
 }
 
 @media screen and (max-width: 935px) and (orientation: landscape) {
@@ -436,18 +430,17 @@ canvas {
     }
 }
 
-
 @media screen and (max-width: 896px) {
     #mobile-controls {
         bottom: 18px; 
     }
-        .container{
-        max-width: 600px !important;
+    .container{
+        max-width: 620px !important;
     }
 }
 
 @media screen and (max-width: 767px) and (orientation: landscape){
-         #mute-btn{
+    #mute-btn{
         top: 0px !important;
     }
     #fullscreen-btn{
@@ -459,13 +452,7 @@ canvas {
     #mobile-controls {
         bottom: 10px; 
     }
-
-     .container{
-        max-width: 575px !important;
-    }
-
 }
-
 
 @media screen and (max-width: 600px) and (orientation: landscape) {
     #mobile-controls {
@@ -478,7 +465,6 @@ canvas {
         padding-top: 15px;
     }
 }
-
 
 @media screen and (max-width: 548px) {
     .menu-btn {
@@ -516,7 +502,27 @@ canvas {
     }    
 }
 
+.top-right-icons {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    display: flex;
+    gap: 8px; 
+    z-index: 100;
+    max-width: 150px;
+    width: 100%;
+}
 
+.top-right-icons .btn-fullscreen {
+    font-size: 20px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 #game-wrapper:fullscreen .fullscreen-buttons {
     position: fixed;
@@ -528,7 +534,6 @@ canvas {
     gap: 10px;
     z-index: 9999;
 }
-
 
 #game-wrapper:fullscreen #fullscreen-btn,
 #game-wrapper:fullscreen #mute-btn {

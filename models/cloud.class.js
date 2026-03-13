@@ -1,36 +1,26 @@
-// Bulutları temsil eden sınıf. Hareket eden bulut nesneleri oluşturur.
+/**
+ * Represents a cloud in the game background.
+ * Clouds move continuously to the left to create a parallax effect.
+ * Inherits from MovableObject.
+ */
 class Clouds extends MovableObject {
-
-    // Bulutun başlangıç yüksekliği (y ekseni)
     y = 50;
-
-    // Bulutun genişliği
     width = 500;
-
-    // Bulutun yüksekliği
     height = 150;
-  
-    
+     /**
+     * Creates a cloud instance with a random X position
+     * and starts its movement to the left.
+     */
     constructor() {
         super();  
-        // MovableObject içindeki özellikleri çalıştırır
-
-        // Bulut resmini yükler
         this.loadImage('image/5_background/layers/4_clouds/1.png');
-
-        // Bulutun başlangıç konumu (rasgele bir x değeri)
         this.x =  Math.random() * 500;
-
-        // Bulutun hareket etmesini başlatır
-        this.animate();
+        //this.animate();
     }
 
-    // Bulutu sürekli sola doğru kaydıran fonksiyon
 animate() {
     setInterval(() => {
         this.moveLeft();
-    }, 1000 / 60);
-}
-
-  
+        }, 1000 / 60);
+    }
 }

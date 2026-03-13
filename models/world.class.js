@@ -70,18 +70,21 @@ setWorld() {
      * If a bottle is available, it is thrown, cooldown is applied, and status bar updated.
      */
 
-    checkThrowObjects() {
-        if (this.keyboard.D && this.bottleStatusBar.bottle > 0 && !this.throwCooldown) {
-            this.throwCooldown = true;
-            let bottle = new ThrowableObject(this.character.x + 50, this.character.y + 70);
-            this.throwableObjects.push(bottle);
-            bottle.throw();
-            this.bottleStatusBar.bottle--;
-            const percentage = (this.bottleStatusBar.bottle / this.bottleStatusBar.maxBottle) * 100;
-            this.bottleStatusBar.setPercentage(Math.min(percentage, 100));
-            setTimeout(() => this.throwCooldown = false, 500);
-        }
+checkThrowObjects() {
+    if (this.keyboard.D && this.bottleStatusBar.bottle > 0 && !this.throwCooldown) {
+        this.throwCooldown = true;
+        let direction = this.character.otherDirection ? -1 : 1;
+        let bottleX = this.character.x + (direction === 1 ? 50 : -10);
+        let bottle = new ThrowableObject(bottleX, this.character.y + 70);
+        this.throwableObjects.push(bottle);
+        bottle.throw(direction);
+        this.bottleStatusBar.bottle--;
+        const percentage = (this.bottleStatusBar.bottle / this.bottleStatusBar.maxBottle) * 100;
+        this.bottleStatusBar.setPercentage(Math.min(percentage, 100));
+        setTimeout(() => this.throwCooldown = false, 500);
     }
+}
+
 
     /**
      * Checks collisions between the character and enemies.
@@ -89,31 +92,35 @@ setWorld() {
      * Handles character response (jump, hit) when colliding with enemies.
      */
 
-    checkCollision() {
-        this.level.enemies.forEach(enemy => {
-            if (this.character.isColliding(enemy)) {
+checkCollision() {
+    this.level.enemies.forEach(enemy => {
+        if (this.character.isColliding(enemy)) {
             const characterBottom = this.character.y + this.character.height - this.character.offset.bottom;
             const enemyTop = enemy.y + enemy.offset.top;
-                if (enemy instanceof Endboss) {
-                    if (!this.character.isHurt()) {
-                        this.character.hit();
-                        this.soundManager.play('damage');
-                        this.healthBar.setPercentage(this.character.energy);
-                    }
-                } else if (!enemy.isDead) {
-                    if (this.character.speedY > 0 && characterBottom < enemyTop + enemy.height / 2 ) {
-                        enemy.die();
-                        this.character.speedY = -15; 
-                    } 
-                    else if (!this.character.isHurt()) {
-                        this.character.hit();
-                        this.soundManager.play('damage');
-                        this.healthBar.setPercentage(this.character.energy);
-                    }
+
+            if (enemy instanceof Endboss) {
+                if (!this.character.isHurt()) {
+                    this.character.hit();
+                    this.soundManager.play('damage');
+                    this.healthBar.setPercentage(this.character.energy);
+                }
+            } else if (!enemy.isDead) {
+                // Stomp threshold ve buffer ekliyoruz
+                const saveCollisionDistance = enemy.height * 0.65 + 5; // 0.65 = enemy üstünün biraz altı, 5px tolerance
+
+                if (this.character.speedY > 0 && characterBottom < enemyTop + saveCollisionDistance) {
+                    enemy.die();
+                    this.character.speedY = -15; 
+                    this.character.startJumpAnimation(); // Kısa zıplama animasyonu
+                } else if (!this.character.isHurt()) {
+                    this.character.hit();
+                    this.soundManager.play('damage');
+                    this.healthBar.setPercentage(this.character.energy);
                 }
             }
-        });
-    }
+        }
+    });
+}
 
     /**
      * Checks if the character collects coins.
@@ -210,6 +217,7 @@ setWorld() {
             if (endboss && endboss.isDead() && endboss.isDeadAnimationPlayed) {
                 this.isGameOver = true;
                 this.soundManager.play('chicken_dead');
+                this.soundManager.play('wind')
                 setTimeout(() => {
                     this.throwableObjects = [];
                     document.getElementById('win-screen').classList.remove('d-none');
@@ -237,13 +245,11 @@ setWorld() {
             this.level.enemies.forEach(enemy => {
                 if (enemy.stopAnimate) enemy.stopAnimate();
             });
-
             // run interval'ını durdur
             if (this.gameIntervalId) {
                 clearInterval(this.gameIntervalId);
                 this.gameIntervalId = null;
             }
-
             // draw animationFrame'ini iptal et
             if (this.animationFrameId) {
                 cancelAnimationFrame(this.animationFrameId);

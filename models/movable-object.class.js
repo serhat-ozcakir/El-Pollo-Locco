@@ -10,7 +10,7 @@ class MovableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
     speedY = 0;
-    gravity = 1.5;
+    gravity = 1.8;
     groundY = 280;
     lastHit = 0;
     lastAnimationTime = 0;
@@ -65,7 +65,7 @@ class MovableObject extends DrawableObject {
      */
 
     hit() {
-        this.energy -= 5;
+        this.energy -= 20;
         if (this.energy < 0) {
             this.energy = 0;
         } else{
@@ -78,11 +78,10 @@ class MovableObject extends DrawableObject {
      * @returns {boolean} True if hurt, false otherwise.
      */
 
-    isHurt(){
-        let timePassed = new Date().getTime() - this.lastHit;
-        timePassed = timePassed / 1000;
-        return timePassed < 1;
-    }
+isHurt() {
+    return (new Date().getTime() - this.lastHit) < 400; 
+}
+
 
     /**
      * Checks if the object is standing still on the ground.

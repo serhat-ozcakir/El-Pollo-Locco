@@ -1,3 +1,7 @@
+/**
+ * Represents the coin collection status bar.
+ */
+
 class CoinStatusBar extends StatusBar {
 
     IMAGES = [
@@ -10,7 +14,7 @@ class CoinStatusBar extends StatusBar {
     ];
 
     coins = 0;
-    maxCoins = 10; // kaç coin full yapsın
+    maxCoins = 10; 
 
     constructor() {
         super();
@@ -19,6 +23,10 @@ class CoinStatusBar extends StatusBar {
         this.setPercentage(0);
     }
 
+     /**
+     * Increases the coin count.
+     * @param {number} amount
+     */
     increase(amount = 1){
         this.coins += amount;
         const percentage = (this.coins / this.maxCoins) * 100;
