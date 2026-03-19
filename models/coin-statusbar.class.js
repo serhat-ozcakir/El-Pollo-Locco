@@ -1,9 +1,7 @@
 /**
  * Represents the coin collection status bar.
  */
-
 class CoinStatusBar extends StatusBar {
-
     IMAGES = [
         'image/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png',
         'image/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png',
@@ -14,8 +12,11 @@ class CoinStatusBar extends StatusBar {
     ];
 
     coins = 0;
-    maxCoins = 10; 
+    maxCoins = 10;
 
+    /**
+     * Creates the coin status bar and initializes it with 0 percent.
+     */
     constructor() {
         super();
         this.y = 50;
@@ -23,11 +24,13 @@ class CoinStatusBar extends StatusBar {
         this.setPercentage(0);
     }
 
-     /**
-     * Increases the coin count.
-     * @param {number} amount
+    /**
+     * Increases the current coin count.
+     *
+     * @param {number} amount - The amount of collected coins.
+     * @returns {void}
      */
-    increase(amount = 1){
+    increase(amount = 1) {
         this.coins += amount;
         const percentage = (this.coins / this.maxCoins) * 100;
         this.setPercentage(Math.min(percentage, 100));

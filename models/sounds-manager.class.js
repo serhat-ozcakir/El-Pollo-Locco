@@ -1,13 +1,24 @@
 /**
- * Class: SoundsManager
- * 
- * Manages all game audio, including background music, character sounds,
- * collectible sounds, and enemy sounds. Supports play, stop, mute, and volume control.
+ * Manages all game sounds.
  */
-
 class SoundsManager {
+    /**
+     * Creates a new sounds manager.
+     */
     constructor() {
-        this.sounds = {
+        this.sounds = this.createSounds();
+        this.isMuted = JSON.parse(localStorage.getItem('muted')) || false;
+        this.setupLoopSounds();
+        this.setupVolumes();
+        this.applyMuteState();
+    }
+
+    /**
+     * Creates the sound collection.
+     * @returns {Object} All game sounds.
+     */
+    createSounds() {
+        return {
             game_start: new Audio('audio/game/gameStart.mp3'),
             boss_music: new Audio('audio/endboss/boss_music.mp3'),
             game_win: new Audio('audio/game/game-win.mp3'),
@@ -24,74 +35,126 @@ class SoundsManager {
             bottle_hit: new Audio('audio/throwable/bottleBreak.mp3'),
             wind: new Audio('audio/game/storm-wind.wav')
         };
-
-        // Loop and volume setup
-        this.sounds.background_music.loop = true;
-        this.sounds.run.loop = true;
-        this.sounds.snoring.loop = true;
-
-        this.sounds.boss_fight = new Audio('audio/endboss/boss_music.mp3');
-        this.sounds.boss_fight.loop = true;
-        this.sounds.boss_fight.volume = 0.1;
-
-        this.sounds.background_music.volume = 0.1;
-        Object.keys(this.sounds).forEach(key => {
-            if (key !== 'background_music' && key !== 'boss_fight') {
-                this.sounds[key].volume = 0.1;
-            }
-        });
-
-        this.isMuted = JSON.parse(localStorage.getItem('muted')) || false;
-        this.applyMuteState();
     }
 
     /**
-     * Plays a sound by name, if not muted and not already playing.
-     * Prevents AbortError by checking if sound is already playing.
-     * @param {string} soundName - Key of the sound in the sounds dictionary.
+     * Sets loop mode for looping sounds.
+     */
+    setupLoopSounds() {
+        this.sounds.background_music.loop = true;
+        this.sounds.run.loop = true;
+        this.sounds.snoring.loop = true;
+        this.sounds.boss_music.loop = true;
+        this.sounds.endboss_approach.loop = true;
+    }
+
+    /**
+     * Sets default volume values.
+     */
+    setupVolumes() {
+        this.sounds.background_music.volume = 0.1;
+        this.sounds.boss_music.volume = 0.1;
+        this.setDefaultSoundVolume();
+    }
+
+    /**
+     * Sets volume for all regular sounds.
+     */
+    setDefaultSoundVolume() {
+        Object.keys(this.sounds).forEach((key) => {
+            if (this.isSpecialVolumeSound(key)) return;
+            this.sounds[key].volume = 0.1;
+        });
+    }
+
+    /**
+     * Checks if a sound has a separate volume setup.
+     * @param {string} key - Sound key.
+     * @returns {boolean} True if the sound is handled separately.
+     */
+    isSpecialVolumeSound(key) {
+        return key === 'background_music' || key === 'boss_music';
+    }
+
+    /**
+     * Plays a sound by name.
+     * @param {string} soundName - The sound key.
      */
     play(soundName) {
         if (this.isMuted) return;
         const sound = this.sounds[soundName];
-        if (!sound) return;
+        if (!sound || !sound.paused) return;
+        sound.currentTime = 0;
+        this.safePlay(sound);
+    }
 
-        if (sound.paused) {
-            sound.currentTime = 0;
-            const playPromise = sound.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    // AbortError silently ignored
-                });
-            }
+    /**
+     * Plays a loop sound safely without resetting currentTime.
+     * @param {string} soundName - The sound key.
+     */
+    playLoop(soundName) {
+        if (this.isMuted) return;
+        const sound = this.sounds[soundName];
+        if (!sound || !sound.paused) return;
+        this.safePlay(sound);
+    }
+
+    /**
+     * Safely starts audio and catches browser play errors.
+     * @param {HTMLAudioElement} sound - The sound to play.
+     */
+    safePlay(sound) {
+        if (!sound || this.isMuted) return;
+        const playPromise = sound.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(() => {});
         }
     }
 
     /**
-     * Stops a specific sound and resets it to the beginning.
-     * @param {string} soundName - Key of the sound to stop.
+     * Safely pauses audio.
+     * @param {HTMLAudioElement} sound - The sound to pause.
+     */
+    safePause(sound) {
+        if (!sound) return;
+        try {
+            sound.pause();
+        } catch (_) {}
+    }
+
+    /**
+     * Stops a specific sound and resets it.
+     * @param {string} soundName - The sound key.
      */
     stop(soundName) {
         const sound = this.sounds[soundName];
-        if (sound && !sound.paused) {
-            sound.pause();
-            sound.currentTime = 0;
-        }
+        if (!sound) return;
+        this.safePause(sound);
+        sound.currentTime = 0;
     }
 
     /**
-     * Stops all sounds and resets them to the beginning.
+     * Pauses a specific sound without resetting it.
+     * @param {string} soundName - The sound key.
+     */
+    pause(soundName) {
+        const sound = this.sounds[soundName];
+        if (!sound || sound.paused) return;
+        this.safePause(sound);
+    }
+
+    /**
+     * Stops and resets all sounds.
      */
     stopAll() {
-        Object.values(this.sounds).forEach(sound => {
-            if (!sound.paused) {
-                sound.pause();
-                sound.currentTime = 0;
-            }
+        Object.values(this.sounds).forEach((sound) => {
+            this.safePause(sound);
+            sound.currentTime = 0;
         });
     }
 
     /**
-     * Mutes all sounds and updates localStorage.
+     * Mutes all sounds.
      */
     muteAll() {
         this.isMuted = true;
@@ -100,7 +163,7 @@ class SoundsManager {
     }
 
     /**
-     * Unmutes all sounds and updates localStorage.
+     * Unmutes all sounds.
      */
     unmuteAll() {
         this.isMuted = false;
@@ -109,17 +172,17 @@ class SoundsManager {
     }
 
     /**
-     * Toggles the mute state on or off.
+     * Toggles the mute state.
      */
     toggleMute() {
         this.isMuted ? this.unmuteAll() : this.muteAll();
     }
 
     /**
-     * Applies the current mute state to all sounds.
+     * Applies the mute state to all sounds.
      */
     applyMuteState() {
-        Object.values(this.sounds).forEach(sound => {
+        Object.values(this.sounds).forEach((sound) => {
             sound.muted = this.isMuted;
         });
     }

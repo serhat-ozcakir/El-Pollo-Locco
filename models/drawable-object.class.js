@@ -1,10 +1,7 @@
 /**
- * Class: DrawableObject
- * 
- * Base class for drawable objects in the game.
- * Provides basic properties and methods for position, size, image handling, and rendering.
+ * Base class for all drawable objects in the game.
+ * Provides properties and methods for image handling and rendering.
  */
-
 class DrawableObject {
     x = 0;
     y = 0;
@@ -14,35 +11,37 @@ class DrawableObject {
     imageCache = {};
     currentImage = 0;
 
-      /**
+    /**
      * Loads a single image and sets it as the current image.
-     * @param {string} path - Path to the image file.
+     *
+     * @param {string} path - The path to the image file.
+     * @returns {void}
      */
-
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
     }
 
-      /**
+    /**
      * Loads multiple images into the image cache.
-     * Useful for animations.
-     * @param {string[]} arr - Array of image paths.
+     *
+     * @param {string[]} arr - The image path array.
+     * @returns {void}
      */
-
     loadImages(arr) {
-        arr.forEach(path => {
+        arr.forEach((path) => {
             const img = new Image();
             img.src = path;
             this.imageCache[path] = img;
         });
     }
 
-       /**
+    /**
      * Draws the object on the given canvas context.
-     * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context.
+     *
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+     * @returns {void}
      */
-
     draw(ctx) {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }

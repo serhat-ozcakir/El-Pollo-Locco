@@ -1,24 +1,20 @@
 /**
- * Class: ThrowableObject
- * 
  * Represents throwable objects in the game, such as bottles.
- * Extends MovableObject and supports throwing, rotation animation,
- * and splash animation upon impact.
+ * Supports throwing, rotation animation, and splash animation.
  */
-
 class ThrowableObject extends MovableObject {
     IMAGES = [
         'image/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
         'image/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
         'image/6_salsa_bottle/bottle_rotation/3_bottle_rotation.png',
-        'image/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png'
+        'image/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png',
     ];
 
     IMAGES_SPLASH = [
         'image/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
         'image/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
         'image/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png',
-        'image/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png'
+        'image/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
     ];
 
     speedX = 6;
@@ -27,6 +23,12 @@ class ThrowableObject extends MovableObject {
     isSplashing = false;
     markedForRemoval = false;
 
+    /**
+     * Creates a new throwable object.
+     *
+     * @param {number} x - The horizontal start position.
+     * @param {number} y - The vertical start position.
+     */
     constructor(x, y) {
         super();
         this.x = x;
@@ -41,9 +43,10 @@ class ThrowableObject extends MovableObject {
     }
 
     /**
-     * Animates the throwable object while in flight (rotation).
+     * Starts the rotation animation while the object is flying.
+     *
+     * @returns {void}
      */
-
     animate() {
         setInterval(() => {
             if (this.isThrown && !this.isSplashing) {
@@ -53,50 +56,79 @@ class ThrowableObject extends MovableObject {
     }
 
     /**
-     * Throws the object, applying initial vertical speed and horizontal motion.
+     * Throws the object in the given direction.
+     *
+     * @param {number} [direction=1] - The throw direction.
+     * @returns {void}
      */
-    throw(direction = 1) {  // 1 = sağ, -1 = sol
+    throw(direction = 1) {
         if (this.isThrown) return;
+
         this.isThrown = true;
         this.speedY = -17;
-        this.speedX = Math.abs(this.speedX) * direction; // hız yönü
+        this.speedX = Math.abs(this.speedX) * direction;
+        this.startThrowMovement();
+    }
 
+    /**
+     * Starts the movement interval for the thrown object.
+     *
+     * @returns {void}
+     */
+    startThrowMovement() {
         setInterval(() => {
             this.y += this.speedY;
             this.speedY += this.gravity;
             this.x += this.speedX;
         }, 1000 / 60);
     }
-    
+
     /**
-     * Triggers the splash animation on impact and marks the object for removal.
+     * Triggers the splash animation and marks the object for removal.
+     *
+     * @returns {void}
      */
     splash() {
         if (this.isSplashing) return;
+
         this.isSplashing = true;
         this.speedX = 0;
         this.speedY = 0;
-        let i = 0;
-        const interval = setInterval(() => {
-            if (i < this.IMAGES_SPLASH.length) {
-                this.img = this.imageCache[this.IMAGES_SPLASH[i]];
-                i++;
-            } else {
-                clearInterval(interval);
-                this.markedForRemoval = true;
-            }
-        }, 1000 / 25);
+        playSplashAnimation(this);
     }
 
     /**
-     * Plays an animation using the provided image array.
-     * @param {string[]} images - Array of image paths for the animation.
+     * Plays an animation using the given image array.
+     *
+     * @param {string[]} images - The animation image array.
+     * @returns {void}
      */
     playAnimation(images) {
-        let i = this.currentImage % images.length;
+        const i = this.currentImage % images.length;
+
         if (this.imageCache[images[i]]) {
             this.img = this.imageCache[images[i]];
             this.currentImage++;
         }
     }
+}
+
+/**
+ * Plays the splash animation for a throwable object.
+ *
+ * @param {ThrowableObject} throwableObject - The throwable object instance.
+ * @returns {void}
+ */
+function playSplashAnimation(throwableObject) {
+    let i = 0;
+    const interval = setInterval(() => {
+        if (i < throwableObject.IMAGES_SPLASH.length) {
+            throwableObject.img = throwableObject.imageCache[throwableObject.IMAGES_SPLASH[i]];
+            i++;
+            return;
+        }
+
+        clearInterval(interval);
+        throwableObject.markedForRemoval = true;
+    }, 1000 / 25);
 }

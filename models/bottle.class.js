@@ -2,10 +2,8 @@
  * Represents a collectible bottle in the game.
  * Inherits from DrawableObject.
  */
-
 class Bottles extends DrawableObject {
     offset = { top: 20, bottom: 20, left: 20, right: 20 };
-
     IMAGES = [
         'image/6_salsa_bottle/1_salsa_bottle_on_ground.png'
     ]

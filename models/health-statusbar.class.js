@@ -1,7 +1,6 @@
 /**
  * Represents the character's health bar UI element.
  */
-
 class HealthStatusBar extends StatusBar {
     IMAGES = [
         'image/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
@@ -12,6 +11,9 @@ class HealthStatusBar extends StatusBar {
         'image/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png',
     ];
 
+    /**
+     * Creates the health status bar with full health.
+     */
     constructor() {
         super();
         this.loadImages(this.IMAGES);

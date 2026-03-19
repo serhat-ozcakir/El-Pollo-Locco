@@ -1,16 +1,14 @@
 /**
- * Class: smallChicken
- * 
  * Represents a small enemy chicken in the game.
- * Extends MovableObject with walking and death animations.
  */
-
 class smallChicken extends MovableObject {
     height = 60;
-    width = 40; 
+    width = 40;
     y = 351;
     energy = 1;
     isDead = false;
+    movementInterval = null;
+    animationInterval = null;
 
     IMAGES_WALKING = [
         'image/3_enemies_chicken/chicken_small/1_walk/1_w.png',
@@ -24,47 +22,74 @@ class smallChicken extends MovableObject {
 
     offset = { top: 5, bottom: 5, left: 10, right: 10 };
 
+    /**
+     * Creates a small chicken enemy.
+     * @param {number} x - The horizontal start position.
+     */
     constructor(x) {
         super();
-        this.loadImage('image/3_enemies_chicken/chicken_small/1_walk/1_w.png');
+        this.loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
-        this.x = 650 + Math.random() * 1700;
+        this.x = x ?? 650 + Math.random() * 1700;
         this.speed = 0.8 + Math.random() * 0.5;
-        //this.animate();
     }
 
     /**
      * Starts walking movement and animation intervals.
      */
-    animate(){
-        // Hareket interval'i
+    animate() {
+        if (this.movementInterval || this.animationInterval) return;
+
         this.movementInterval = setInterval(() => {
-            if(!this.isDead) this.moveLeft();
+            if (!this.isDead) this.moveLeft();
         }, 1000 / 60);
 
         this.animationInterval = setInterval(() => {
-            if(!this.isDead) this.playAnimation(this.IMAGES_WALKING);
+            if (!this.isDead) this.playAnimation(this.IMAGES_WALKING);
         }, 300);
     }
 
     /**
+     * Stops all chicken intervals.
+     */
+    stopAnimate() {
+        clearInterval(this.movementInterval);
+        clearInterval(this.animationInterval);
+        this.movementInterval = null;
+        this.animationInterval = null;
+    }
+
+    /**
      * Kills the small chicken.
-     * Stops movement, plays death animation and sound,
-     * and removes it from the world after a short delay.
      */
     die() {
         if (this.isDead) return;
         this.isDead = true;
         this.speed = 0;
-        clearInterval(this.movementInterval);
-        clearInterval(this.animationInterval);
+        this.stopAnimate();
         this.currentImage = 0;
         this.loadImage(this.IMAGES_DEAD[0]);
+        this.playDeathSound();
+        this.removeFromWorld();
+    }
+
+    /**
+     * Plays the death sound safely.
+     */
+    playDeathSound() {
+        if (!this.world || !this.world.soundManager) return;
         this.world.soundManager.play('chicken_dead');
+    }
+
+    /**
+     * Removes the chicken from the world after a short delay.
+     */
+    removeFromWorld() {
         setTimeout(() => {
+            if (!this.world || !this.world.level) return;
             const index = this.world.level.enemies.indexOf(this);
-            if(index > -1) this.world.level.enemies.splice(index, 1);
+            if (index > -1) this.world.level.enemies.splice(index, 1);
         }, 1000);
     }
-    }
+}

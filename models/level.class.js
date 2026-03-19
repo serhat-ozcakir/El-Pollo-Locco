@@ -4,7 +4,6 @@
  * Represents a game level, containing enemies, clouds, background objects,
  * coins, and bottles. Also defines the end point of the level.
  */
-
 class Level {
     enemies;
     clouds;

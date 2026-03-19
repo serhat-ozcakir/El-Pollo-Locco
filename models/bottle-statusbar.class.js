@@ -1,7 +1,6 @@
 /**
  * Represents the bottle count status bar.
  */
-
 class BottleStatusBar extends StatusBar {
     IMAGES = [
         'image/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
