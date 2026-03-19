@@ -6,23 +6,36 @@ let soundManager;
 let mobileControlsEnabled = false;
 
 /**
- * Initializes the game by setting up canvas, sound manager, and mute icon.
- * Also shows the start screen.
+ * Initializes the game and prepares the start screen.
  */
 function init() {
     canvas = document.getElementById('canvas');
     soundManager = new SoundsManager();
+    keyboard = new Keyboard();
+    addEventListeners();
     updateMuteIcon();
     showStartScreen();
     document.querySelector('.top-right-icons').style.display = 'none';
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    keyboard = new Keyboard();
-});
+/**
+ * Adds all global event listeners.
+ */
+function addEventListeners() {
+    addFullscreenEventListeners();
+}
 
 /**
- * Toggles the mute state of the game sounds and updates the mute icon.
+ * Adds fullscreen change event listeners.
+ */
+function addFullscreenEventListeners() {
+    document.addEventListener('fullscreenchange', updateFullscreenIcon);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+    document.addEventListener('msfullscreenchange', updateFullscreenIcon);
+}
+
+/**
+ * Toggles the mute state and updates the mute icon.
  */
 function toggleMute() {
     soundManager.toggleMute();
@@ -30,110 +43,131 @@ function toggleMute() {
 }
 
 /**
- * Updates the mute icon based on the current mute state.
- * If muted, shows "bi-volume-mute"; otherwise shows "bi-volume-up".
+ * Updates the mute icon based on the current sound state.
  */
 function updateMuteIcon() {
     const icon = document.getElementById('mute-icon');
     if (soundManager.isMuted) {
         icon.classList.remove('bi-volume-up');
         icon.classList.add('bi-volume-mute');
-    } else {
-        icon.classList.remove('bi-volume-mute');
-        icon.classList.add('bi-volume-up');
+        return;
     }
+
+    icon.classList.remove('bi-volume-mute');
+    icon.classList.add('bi-volume-up');
 }
 
-
 /**
- * Toggles fullscreen mode for the game.
- * Uses browser-specific prefixes for compatibility.
+ * Toggles fullscreen mode for the game wrapper.
  */
-
 function toggleFullScreen() {
-   // let element = document.documentElement;
-    let element = document.getElementById('game-wrapper');
+    const element = document.getElementById('game-wrapper');
     if (!document.fullscreenElement) {
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
-        }
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
+        enterFullScreen(element);
+        return;
+    }
+
+    exitFullScreen();
+}
+
+/**
+ * Requests fullscreen mode with browser compatibility support.
+ * @param {HTMLElement} element - The element to show in fullscreen.
+ */
+function enterFullScreen(element) {
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
     }
 }
 
-
-function toggleControl() {
-    mobileControlsEnabled = !mobileControlsEnabled;
-    updateMobileControls();
+/**
+ * Exits fullscreen mode with browser compatibility support.
+ */
+function exitFullScreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+    }
 }
 
+/**
+ * Toggles the visibility of the mobile controls.
+ */
+function toggleControl() {
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls.style.display === 'flex') {
+        mobileControls.style.display = 'none';
+        return;
+    }
+
+    mobileControls.style.display = 'flex';
+}
 
 /**
- * Updates the visibility of mobile control buttons based on the current game state.
- *
- * - Shows the mobile controls (`display: flex`) when the game has started and is not over.
- * - Hides the mobile controls (`display: none`) when the game hasn't started or the game is over.
- *
- * This function should be called whenever the game state changes, such as:
- *   - When starting the game
- *   - When restarting the game
- *   - When returning to the main menu
+ * Updates the mobile controls based on the current game state.
  */
-
 function updateMobileControls() {
     const mobileControls = document.getElementById('mobile-controls');
     if (gameStarted && !world?.isGameOver && mobileControlsEnabled) {
         mobileControls.style.display = 'flex';
-    } else {
-        mobileControls.style.display = 'none';
+        return;
     }
+
+    mobileControls.style.display = 'none';
 }
 
-
-// Event listeners for fullscreen changes
-document.addEventListener('fullscreenchange', updateFullscreenIcon);
-document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
-document.addEventListener('msfullscreenchange', updateFullscreenIcon);
-
 /**
- * Updates the fullscreen icon based on whether the game is in fullscreen mode.
- * Shows "fullscreen-exit" if in fullscreen, "fullscreen" otherwise.
+ * Updates the fullscreen icon depending on the fullscreen state.
  */
 function updateFullscreenIcon() {
     const fullscreenBtn = document.getElementById('fullscreen-icon');
-    if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+    if (isFullscreenActive()) {
         fullscreenBtn.classList.remove('bi-fullscreen');
         fullscreenBtn.classList.add('bi-fullscreen-exit');
-    } else {
-        fullscreenBtn.classList.remove('bi-fullscreen-exit');
-        fullscreenBtn.classList.add('bi-fullscreen');
+        return;
     }
-}   
+
+    fullscreenBtn.classList.remove('bi-fullscreen-exit');
+    fullscreenBtn.classList.add('bi-fullscreen');
+}
 
 /**
- * Starts the game.
- * - Displays mute and fullscreen icons.
- * - Prevents restarting if the game is already started.
- * - Hides all screens and initializes the game world.
- * - Plays start sound and background music.
+ * Checks whether fullscreen mode is currently active.
+ * @returns {boolean} True if fullscreen is active.
+ */
+function isFullscreenActive() {
+    return !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.msFullscreenElement
+    );
+}
+
+/**
+ * Checks whether the game can be started safely.
+ * @returns {boolean} True if all required objects exist.
+ */
+function canStartGame() {
+    return !!canvas && !!keyboard && !!soundManager;
+}
+
+/**
+ * Starts the game and initializes the world.
  */
 function startGame() {
     document.querySelector('.top-right-icons').style.display = 'flex';
     muteSoundButtonDisplay();
     if (gameStarted) return;
+    if (!canStartGame()) return;
     hideAllScreens();
-    world = new World(canvas, keyboard,soundManager);
+    world = new World(canvas, keyboard);
     gameStarted = true;
     updateMobileControls();
     soundManager.play('game_start');
@@ -141,23 +175,14 @@ function startGame() {
 }
 
 /**
- * Restarts the game.
- * - Displays mute and fullscreen icons.
- * - Stops all sounds.
- * - Hides all screens.
- * - Stops the current game world loop if running.
- * - Resets keyboard and level1.
- * - Starts the game again.
+ * Restarts the current game session.
  */
 function restartGame() {
-      document.querySelector('.top-right-icons').style.display = 'flex';
-   muteSoundButtonDisplay()
+    document.querySelector('.top-right-icons').style.display = 'flex';
+    muteSoundButtonDisplay();
     soundManager.stopAll();
     hideAllScreens();
-    if (world) {
-        world.stopGameLoop();
-        world = null;
-    }
+    resetWorldState();
     keyboard.reset();
     level1.reset();
     gameStarted = false;
@@ -166,66 +191,67 @@ function restartGame() {
 }
 
 /**
- * Returns to the main menu.
- * - Hides mute and fullscreen icons.
- * - Stops all sounds.
- * - Stops the game world loop if running.
- * - Clears the canvas.
- * - Resets keyboard and level1.
- * - Shows the start screen.
+ * Resets the current world instance if it exists.
+ */
+function resetWorldState() {
+    if (!world) return;
+    world.stopGameLoop();
+    world = null;
+}
+
+/**
+ * Returns from the game to the main menu.
  */
 function mainGame() {
-     document.querySelector('.top-right-icons').style.display = 'none';
+    document.querySelector('.top-right-icons').style.display = 'none';
     muteSoundButtonDisplayHome();
     soundManager.stopAll();
-    if (world) {
-        world.stopGameLoop();
-        world = null;
-    }
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    resetWorldState();
+    clearCanvas();
     gameStarted = false;
     keyboard.reset();
     hideAllScreens();
     showStartScreen();
     updateMobileControls();
-    if (level1 && typeof level1.reset === "function") {
+    resetLevel();
+}
+
+/**
+ * Clears the canvas content.
+ */
+function clearCanvas() {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+/**
+ * Resets level1 if a reset function exists.
+ */
+function resetLevel() {
+    if (level1 && typeof level1.reset === 'function') {
         level1.reset();
     }
 }
 
 /**
- * Displays mute and fullscreen icons.
+ * Shows the mute and fullscreen buttons.
  */
 function muteSoundButtonDisplay() {
     document.getElementById('mute-icon').style.display = 'block';
     document.getElementById('fullscreen-icon').style.display = 'block';
-
 }
 
 /**
- * Hides mute and fullscreen icons.
+ * Hides the mute and fullscreen buttons.
  */
 function muteSoundButtonDisplayHome() {
     document.getElementById('mute-icon').style.display = 'none';
     document.getElementById('fullscreen-icon').style.display = 'none';
-
 }
-
-function toggleControl() {
-    const mobileControls = document.getElementById('mobile-controls');
-    const controlBtn = document.getElementById('control-btn');
-
-    if (mobileControls.style.display === 'flex') {
-        mobileControls.style.display = 'none';
-    } else {
-        mobileControls.style.display = 'flex';
-    }
-}
-
 
 /**
- * Shows the start screen and hides win/game over screens.
+ * Shows the start screen and hides all end screens.
  */
 function showStartScreen() {
     document.getElementById('start-screen').classList.remove('d-none');
@@ -234,12 +260,10 @@ function showStartScreen() {
 }
 
 /**
- * Hides all game screens (start, win, game over).
+ * Hides all game-related screens.
  */
 function hideAllScreens() {
     document.getElementById('start-screen').classList.add('d-none');
     document.getElementById('win-screen').classList.add('d-none');
     document.getElementById('gameover-screen').classList.add('d-none');
 }
-
-
