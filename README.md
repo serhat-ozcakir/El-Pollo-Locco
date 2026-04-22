@@ -57,6 +57,12 @@ The project focuses on object-oriented programming, game logic, animations, and 
 👉 [El Pollo Locco](https://serhat-oezcakir.de/El-Pollo-Locco/)
 
 ---
+## 📸 Screenshots
+
+### Gameplay
+
+![Gameplay](https://github.com/user-attachments/assets/a5f6255a-fd43-45f0-b23f-62a826485326)
+
 
 ## 💻 Installation
 
