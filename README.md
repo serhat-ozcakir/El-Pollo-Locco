@@ -54,7 +54,7 @@ The project focuses on object-oriented programming, game logic, animations, and 
 
 ## 🌐 Live Demo
 
-👉 [[El Pollo Locco]https://serhat-oezcakir.de/El-Pollo-Locco/](https://serhat-oezcakir.de/El-Pollo-Locco/)
+👉 [El Pollo Locco](https://serhat-oezcakir.de/El-Pollo-Locco/)
 
 ---
 
