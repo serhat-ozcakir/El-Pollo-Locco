@@ -67,6 +67,6 @@ The project focuses on object-oriented programming, game logic, animations, and 
 ## 💻 Installation
 
 ```bash
-git clone [repo-link]
+git clone [https://github.com/serhat-ozcakir/El-Pollo-Locco.git]
 cd el-pollo-loco
 open index.html
